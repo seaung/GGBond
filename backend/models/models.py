@@ -42,3 +42,30 @@ class DeviceNearby(models.Model):
     product = fields.CharField(max_length=100)
     port = fields.CharField(max_length=100)
     org = fields.CharField(max_length=100)
+
+
+class Whois(models.Model):
+    device = fields.ForeignKeyField("models.Device", on_delete=fields.CASCADE)
+    name = fields.CharField(max_length=100)
+    org = fields.CharField(max_length=100)
+    street = fields.CharField(max_length=100)
+    city = fields.CharField(max_length=100)
+    netrange = fields.CharField(max_length=100)
+    admin_org = fields.CharField(max_length=100)
+    admin_email = fields.CharField(max_length=100)
+    admin_phone = fields.CharField(max_length=100)
+    email = fields.CharField(max_length=100)
+
+
+class Bosch(models.Model):
+    device = fields.ForeignKeyField("models.Device", on_delete=fields.CASCADE)
+    username = fields.CharField(max_length=100)
+    password = fields.CharField(max_length=100)
+
+
+class UniView(models.Model):
+    device = fields.ForeignKeyField("models.Device", on_delete=fields.CASCADE)
+    username = fields.CharField(max_length=100)
+    password = fields.CharField(max_length=100)
+    ipaddr = fields.CharField(max_length=100)
+
