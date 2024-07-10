@@ -1,23 +1,20 @@
-from celery import shared_task, current_app
+import os
+from typing import Any
 
-from models.models import Device
+from celery import shared_task
+from shodan import Shodan
 
 
-async def nmap_scan_worker(host, max_reader, search) -> None:
-    port_list = []
-    hostname = host.hostname[0]
+@shared_task
+def device_nearby(lat: str = '', lon: str = '', id: int = 1, query: str = '') -> dict:
+    shodan_key = os.getenv('SHODAN_API_KEY')
+    res: Any = None
 
-    reader = max_reader.get(host.address)
+    shodan_client = Shodan(shodan_key)
+    try:
+        res = shodan_client.search('geo:' + lat + ',' + lon + ',15' + query)
+    except Exception:
+        pass
 
-    for port in host.services:
-        if port.state == 'open':
-            port_list.append(port.port)
-        else:
-            port_list.append('None')
-
-    port_string = ', '.join(str(item) for item in port_list)
-
-    device = Device()
-    await device.save()
-
+    return {'result': res}
 
