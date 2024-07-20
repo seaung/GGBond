@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
 
-api_bp = APIRouter()
+api_bp = APIRouter(prefix='/vul')
 
 
 @api_bp.post(path="/dashboard", summary="仪表盘")
