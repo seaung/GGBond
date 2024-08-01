@@ -27,6 +27,7 @@ prompt-toolkit==3.0.39
 pyasn1==0.5.0
 pycparser==2.21
 pydantic==1.10.11
+PyJWT==2.8.0
 pypika-tortoise==0.1.6
 python-dateutil==2.8.2
 python-dotenv==1.0.0
