@@ -1,8 +1,7 @@
 from celery import Celery
-from celery.utils.functional import fun_accepts_kwargs
 from fastapi import FastAPI
-from strarlette.middleware.cors import CORSMiddleware
 from tortoise.contrib.fastapi import register_tortoise
+from starlette.middleware.cors import CORSMiddleware
 
 from app.api.v1 import create_api_v1
 from app.configs.config import settings
