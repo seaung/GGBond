@@ -11,10 +11,12 @@ class User(models.Model):
     is_active = fields.BooleanField(default=True, description="是否被激活")
     is_superuser = fields.BooleanField(default=False, description="是否为超级用户")
 
-    def verify_password(self, plain_password: str, hashed_password: str) -> bool:
+    @staticmethod
+    def verify_password(plain_password: str, hashed_password: str) -> bool:
         return pwd_context.verify(plain_password, hashed_password)
 
-    def get_password_hash(self, raw_password: str) -> str:
+    @staticmethod
+    def get_password_hash(raw_password: str) -> str:
         return pwd_context.hash(raw_password)
 
     def get_user(self, username: str) -> Any:
@@ -22,11 +24,12 @@ class User(models.Model):
         if user:
             return user
 
-    def authenticate_user(self, username: str, password: str) -> bool:
-        user = self.get_user(username)
+    @staticmethod
+    def authenticate_user(username: str, password: str) -> bool:
+        user = User.filter(username=username).first().prefetch_related()
         if not user:
             return False
-        if not self.verify_password(password, user.password):
+        if not verify_password(password, user.password):
             return False
         return True
 
