@@ -12,6 +12,8 @@ def create_celery_app() -> Celery:
     return: Celery实例
     '''
     celery_app = Celery('app')
+    celery_app.conf.broker_url = 'redis://localhost:6379/0'
+    celery_app.conf.result_backend = 'redis://localhost:6379/0'
 
     return celery_app
 
@@ -21,11 +23,11 @@ def register_db(app: FastAPI) -> None:
     app: FastAPI实例
     return: None
     '''
-    db_uri: str = ''
+    db_uri: str = 'sqlite://db.sqlite3'
     tortoise_orm_mapping: dict = {
         'connections': {'default': db_uri},
         'apps': {
-            'models': [],
+            'models': ['app.models.models', 'app.models.user', 'app.models.results'],
             'default_connection': 'default',
         }
     }
@@ -40,7 +42,7 @@ def register_middlewares(app: FastAPI) -> None:
     '''
     if settings.DEBUG:
         app.add_middleware(CORSMiddleware, 
-            allow_orgins=['*'],
+            allow_origins=['*'],
             allow_credentials=True,
             allow_methods=['*'],
             allow_headers=['*'],
@@ -53,8 +55,9 @@ def create_app() -> FastAPI:
     '''
     app = FastAPI()
 
+    register_middlewares(app)
+    register_db(app)
     app.include_router(router=create_api_v1(), prefix='/api')
-
     app.celery_app = create_celery_app()
 
     return app
